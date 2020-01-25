@@ -1,0 +1,96 @@
+#include "../hpp/Base.hpp"
+#include "../hpp/Exceptions.hpp"
+#include "../hpp/Regex.hpp"
+#include "../hpp/Operand.hpp"
+#include <algorithm>
+#include <fstream>
+
+void	Base::bs_read_from_input(void)
+{
+	for (std::string line; (std::getline(std::cin, line) && line != ";;");)
+		str_.push_back(line);
+}
+
+void	Base::bs_read_from_file(char *file_name)
+{
+	std::ifstream ifs;
+
+	ifs.open(file_name);
+	if (!ifs.is_open())
+		throw Exceptions::FileOpen(file_name);
+	for (std::string line; std::getline(ifs, line);)
+		str_.push_back(line);
+	ifs.close();
+}
+
+void	Base::bs_valid_str(void)
+{
+	for (auto i = str_.begin(); i != str_.end(); ++i)
+	{
+		try
+		{
+			if (!bs_parser(*i))
+				break;
+		}
+		catch (const std::exception &e)
+		{
+			std::cout << e.what() << std::endl;
+		}
+		++Exceptions::line;
+	}
+	if (!is_exit_command_)
+		throw Exceptions::NoExitCommandError();
+}
+
+bool	Base::bs_parser(std::string const & str)
+{
+	if (str.empty() || std::all_of(str.begin(), str.end(), isspace))
+		return (true);
+	if (std::regex_match(str.c_str(), result_, cmd_))
+	{
+		if (result_[REGEX_CMD_INDEX] == "exit")
+		{
+			is_exit_command_ = true;
+			return (false);
+		}
+		return (true);
+	}
+	else if (std::regex_match(str.c_str(), comment_)
+		|| std::regex_match(str.c_str(), cmd_with_value_))
+		return (true);
+	else
+	{
+		is_valid_data_ = false;
+		throw Exceptions::SyntaxError(std::to_string(Exceptions::line), str);
+	}
+}
+
+bool	Base::bs_is_valid_data(void) { return (is_valid_data_); }
+
+void	Base::bs_run_calculator(void)
+{
+	Exceptions::line = 1;
+	for (auto i = str_.begin(); (i != str_.end() && is_exit_command_); ++i)
+	{
+		if (std::regex_match((*i).c_str(), result_, cmd_)
+			|| std::regex_match((*i).c_str(), result_, cmd_with_value_))
+			cmd_executor_.execute_command(*this);
+		++Exceptions::line;
+	}
+}
+
+Base	&Base::operator=(Base const & rhs)
+{
+	if (this != &rhs)
+	{
+		
+	}
+	return (*this);
+}
+Base::Base(Base const & rhs) { *this = rhs; }
+
+Base::~Base(void)
+{
+	for (auto i = stack_.begin(); i != stack_.end(); ++i)
+		delete *i;
+}

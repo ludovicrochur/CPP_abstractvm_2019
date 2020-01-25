@@ -1,17 +1,52 @@
-EXEC	= abstractVM
+NAME		=	abstractVM
+FLAGS		= 	-Wall -Werror -Wextra
+COMPILER	=	g++ -std=c++11
 
-SRC		= main.cpp Exception.cpp AbstractVM.cpp
+DIR_HPP		=	./hpp/
+DIR_CPP		=	./cpp/
+DIR_OBJ		= 	./obj/
 
-RM		= rm -f
+#-------------------------- Header files ---------------------------------------
+HEAD_AVM	=	IOperand.hpp\
+				Exceptions..hpp\
+				Base.hpp\
+				Regex.hpp\
+				Factory.hpp\
+				Operand.hpp\
+				Commands.hpp\
+				Casts..hpp
 
-FLAGS   = -Wall -Wextra -Werror
+#-------------------------- Source files ---------------------------------------
+CPP_AVM		=	main.cpp\
+				Exceptions.cpp\
+				Base.cpp\
+				Factory.cpp\
+				Commands.cpp
 
-all:	$(EXEC) 
+HPP_PATH 	= 	$(addprefix $(DIR_HPP), $(HEAD_AVM))
 
-$(EXEC):
-		g++ -o $(EXEC) $(SRC) $(FLAGS)
+OBJ 		= 	$(addprefix $(DIR_OBJ), $(CPP_AVM:.cpp=.o))
+HPP 		= 	$(addprefix -I, $(DIR_HPP))
+
+all: obj $(NAME)
+
+obj:
+	@mkdir -p $(DIR_OBJ)
+
+#-------------------------- Compil Block ---------------------------------------
+$(NAME): $(OBJ)
+	@$(COMPILER) -o $(NAME) $(OBJ)
+
+#-------------------------- Link Block -----------------------------------------
+#source
+$(DIR_OBJ)%.o: $(DIR_CPP)%.cpp $(HPP_PATH)
+	@$(COMPILER) $(FLAGS) $(HPP) -c -o $@ $<
 
 clean:
-		$(RM) $(EXEC)
+	@rm -rf $(DIR_OBJ)
 
-re:		clean all
+fclean:
+	@rm -rf $(DIR_OBJ)
+	@rm -f $(NAME)
+
+re: fclean all
