@@ -1,7 +1,7 @@
-#include "../hpp/Base.hpp"
-#include "../hpp/Exceptions.hpp"
-#include "../hpp/Regex.hpp"
-#include "../hpp/Operand.hpp"
+#include "../includes/Base.hpp"
+#include "../includes/Exceptions.hpp"
+#include "../includes/Regex.hpp"
+#include "../includes/Operand.hpp"
 #include <algorithm>
 #include <fstream>
 
@@ -74,7 +74,7 @@ void	Base::bs_run_calculator(void)
 	{
 		if (std::regex_match((*i).c_str(), result_, cmd_)
 			|| std::regex_match((*i).c_str(), result_, cmd_with_value_))
-			cmd_executor_.execute_command(*this);
+			cmd_executor_.ce_execute_command(*this);
 		++Exceptions::line;
 	}
 }
@@ -88,7 +88,12 @@ Base	&Base::operator=(Base const & rhs)
 	return (*this);
 }
 Base::Base(Base const & rhs) { *this = rhs; }
-
+Base::Base(void)
+: comment_(REGEX_COMMENT_ALWAYS), cmd_(REGEX_CMD), cmd_with_value_(REGEX_CMD_WITH_VALUE)
+{
+	is_valid_data_ = true;
+	is_exit_command_ = false;
+}
 Base::~Base(void)
 {
 	for (auto i = stack_.begin(); i != stack_.end(); ++i)

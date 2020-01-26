@@ -19,20 +19,22 @@ private:
 	const IOperand * right_;
 	const IOperand * left_;
 
-	void		del_io(const IOperand ** obj);
+	void		ce_del_io(const IOperand ** obj);
 
-	void	pop(Base & bs);
-	void	dump(Base & bs);
-	void	add(Base & bs);
-	void	sub(Base & bs);
-	void	mul(Base & bs);
-	void	div(Base & bs);
-	void	mod(Base & bs);
-	void	print(Base & bs);
-	void	exit(Base & bs);
-	
+	void	ce_pop(Base & bs);
+	void	ce_dump(Base & bs);
+	void	ce_add(Base & bs);
+	void	ce_sub(Base & bs);
+	void	ce_mul(Base & bs);
+	void	ce_div(Base & bs);
+	void	ce_mod(Base & bs);
+	void	ce_print(Base & bs);
+	void	ce_exit(Base & bs);
+
+	void	ce_push(Base & bs);
+	void	ce_assert(Base & bs);
 public:
-	void	execute_command(Base & bs);
+	void	ce_execute_command(Base & bs);
 
 	Commands	&operator=(Commands const & rhs);
 	Commands(Commands const & rhs);

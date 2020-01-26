@@ -1,7 +1,7 @@
-#include "../hpp/Factory.hpp"
-#include "../hpp/Operand.hpp"
-#include "../hpp/Exceptions.hpp"
-#include "../hpp/Casts.hpp"
+#include "../includes/Factory.hpp"
+#include "../includes/Operand.hpp"
+#include "../includes/Exceptions.hpp"
+#include "../includes/Casts.hpp"
 
 IOperand const	*Factory::Factory::createDouble(std::string const & value) const
 {
